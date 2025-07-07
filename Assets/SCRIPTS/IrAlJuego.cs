@@ -7,6 +7,6 @@ public class IrAlJuego : MonoBehaviour
 {
     public void CargarJuego()
     {
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("Juego");
     }
 }
