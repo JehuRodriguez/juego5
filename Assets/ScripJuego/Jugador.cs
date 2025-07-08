@@ -8,10 +8,9 @@ public class Jugador : MonoBehaviour
 
     void Update()
     {
-        float movimientoX = Input.GetAxis("Horizontal");
-        float movimientoZ = Input.GetAxis("Vertical");
-
-        Vector3 movimiento = new Vector3(movimientoX, 0, movimientoZ);
-        transform.Translate(movimiento * velocidad * Time.deltaTime);
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+        Vector3 mov = new Vector3(x, 0, z);
+        transform.Translate(mov * velocidad * Time.deltaTime);
     }
 }

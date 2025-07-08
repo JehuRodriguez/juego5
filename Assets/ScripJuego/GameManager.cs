@@ -1,47 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using TMPro;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance;
+    public TMP_Text textoPuntaje;
+
     int nivel;
     string jugador;
     int puntaje;
+
+    void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
         jugador = PlayerPrefs.GetString("Jugador", "Anon");
         nivel = PlayerPrefs.GetInt("Nivel", 1);
+        ActualizarUI();
+    }
 
-        Debug.Log("Jugador: " + jugador);
-        Debug.Log("Nivel: " + nivel);
+    public void SumarPuntaje(int p)
+    {
+        puntaje += p;
+        ActualizarUI();
+    }
 
-        switch (nivel)
-        {
-            case 1:
-                Debug.Log("Nivel 1: pocos enemigos");
-                puntaje = 150; 
-                break;
-            case 2:
-                Debug.Log("Nivel 2: más enemigos");
-                puntaje = 100;
-                break;
-            case 3:
-                Debug.Log("Nivel 3: dificultad alta");
-                puntaje = 50;
-                break;
-            default:
-                Debug.Log("Nivel desconocido");
-                puntaje = 0;
-                break;
-        }
+    void ActualizarUI()
+    {
+        textoPuntaje.text = "Puntaje: " + puntaje;
     }
 
     public void TerminarNivel()
     {
-        Debug.Log("Nivel terminado, enviando puntaje...");
         StartCoroutine(EnviarPuntaje());
     }
 
@@ -52,17 +49,12 @@ public class GameManager : MonoBehaviour
         form.AddField("id_nivel", nivel);
         form.AddField("valor_puntaje", puntaje);
 
-        UnityWebRequest www = UnityWebRequest.Post("http://localhost/juego_niveles2/Insertar_puntaje.php", form);
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost/juego_niveles2/insertar_actualizar_puntaje.php", form);
         yield return www.SendWebRequest();
 
         if (www.result == UnityWebRequest.Result.Success)
         {
-            Debug.Log("Puntaje guardado correctamente");
-            SceneManager.LoadScene("Menu Principal"); 
-        }
-        else
-        {
-            Debug.Log("Error al enviar puntaje: " + www.error);
+            SceneManager.LoadScene("Menu Principal");
         }
     }
 

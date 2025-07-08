@@ -4,20 +4,14 @@ using UnityEngine;
 
 public class Enemigo : MonoBehaviour
 {
-    Transform jugador;
-    public float velocidad = 2f;
+    public int valorPuntos = 5;
 
-    void Start()
+    void OnCollisionEnter(Collision col)
     {
-        jugador = GameObject.FindWithTag("Player").transform;
-    }
-
-    void Update()
-    {
-        if (jugador != null)
+        if (col.gameObject.CompareTag("Player"))
         {
-            Vector3 direccion = (jugador.position - transform.position).normalized;
-            transform.position += direccion * velocidad * Time.deltaTime;
+            GameManager.instance.SumarPuntaje(valorPuntos);
+            Destroy(gameObject);
         }
     }
 }
