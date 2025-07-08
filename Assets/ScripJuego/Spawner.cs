@@ -19,7 +19,8 @@ public class Spawner : MonoBehaviour
             e.GetComponent<Enemigo>().valorPuntos = Random.Range(2, 6);
         }
 
+        GameManager.instance.totalEnemigosNivel = puntos.Length;
         yield return new WaitForSeconds(10f);
-        GameManager.instance.TerminarNivel(); 
+       
     }
 }

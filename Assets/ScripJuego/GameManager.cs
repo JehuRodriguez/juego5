@@ -14,6 +14,12 @@ public class GameManager : MonoBehaviour
     string jugador;
     int puntaje;
 
+
+    int enemigosEliminados = 0;
+    [HideInInspector]
+    public int totalEnemigosNivel;
+
+
     void Awake()
     {
         instance = this;
@@ -29,7 +35,13 @@ public class GameManager : MonoBehaviour
     public void SumarPuntaje(int p)
     {
         puntaje += p;
+        enemigosEliminados++;
         ActualizarUI();
+
+        if (enemigosEliminados >= totalEnemigosNivel) 
+        {
+            Debug.Log("¡Todos los enemigos eliminados! Puedes presionar el botón TERMINAR NIVEL.");
+        }
     }
 
     void ActualizarUI()
@@ -45,16 +57,25 @@ public class GameManager : MonoBehaviour
     IEnumerator EnviarPuntaje()
     {
         WWWForm form = new WWWForm();
-        form.AddField("nombre_usuario", jugador);
-        form.AddField("id_nivel", nivel);
-        form.AddField("valor_puntaje", puntaje);
 
-        UnityWebRequest www = UnityWebRequest.Post("http://localhost/juego_niveles2/insertar_actualizar_puntaje.php", form);
+        string nombre_nivel = "Nivel " + nivel;
+
+        Debug.Log(" Enviando puntaje...");
+        form.AddField("nombre_usuario", jugador);
+        form.AddField("nombre_nivel", nombre_nivel);
+        form.AddField("puntaje", puntaje);
+
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost/juego5/insertar_actualizar_puntaje.php", form);
         yield return www.SendWebRequest();
 
         if (www.result == UnityWebRequest.Result.Success)
         {
-            SceneManager.LoadScene("Menu Principal");
+            Debug.Log(" Puntaje enviado con éxito: " + www.downloadHandler.text);
+            SceneManager.LoadScene("MenuPrincipal");
+        }
+        else
+        {
+            Debug.Log(" Error al enviar puntaje: " + www.error);
         }
     }
 
